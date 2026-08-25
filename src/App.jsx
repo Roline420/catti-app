@@ -1695,16 +1695,19 @@ function PracticeRoom(p) {
     setChatHistory(newHist); setChatInput(""); setIsChatting(true);
     var contextStr = "【原题原文】：\n" + rawText + "\n\n【考生的译文】：\n" + recText;
 
-    fetch('http://localhost:3000/api/chat', {
+    var chatPrompt = "你是专业的CATTI考官。请根据以下上下文回答考生的疑问：\n" + contextStr;
+
+    fetch('https://catti-app.vercel.app/api/gemini', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: chatInput, context: contextStr })
+      body: JSON.stringify({ prompt: chatPrompt, userData: chatInput })
     })
     .then(function(res) { return res.json(); })
     .then(function(data) {
-      setChatHistory(newHist.concat([{ role: "考官", content: data.reply }])); setIsChatting(false);
+      var replyText = typeof data === 'string' ? data : (data.reply || data.text || JSON.stringify(data));
+      setChatHistory(newHist.concat([{ role: "考官", content: replyText }])); setIsChatting(false);
     })
     .catch(function() {
-      setChatHistory(newHist.concat([{ role: "考官", content: "🚨 网络开小差了！" }])); setIsChatting(false);
+      setChatHistory(newHist.concat([{ role: "考官", content: "🚨 呼叫考官失败，请检查网络！" }])); setIsChatting(false);
     });
   };
 
@@ -1982,17 +1985,20 @@ function ResultPage(p) {
     setChatModal({ title: currentTitle, context: currentCtx, messages: newMsgs });
     setChatInput(""); setChatLoading(true);
 
-    fetch('http://localhost:3000/api/chat', {
+    var chatPrompt = "你是专业的CATTI考官。请根据以下上下文回答考生的疑问：\n" + currentCtx;
+
+    fetch('https://catti-app.vercel.app/api/gemini', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: question, context: currentCtx })
+      body: JSON.stringify({ prompt: chatPrompt, userData: question })
     })
     .then(function(res) { return res.json(); })
     .then(function(data) {
-      setChatModal({ title: currentTitle, context: currentCtx, messages: newMsgs.concat({ role: "ai", text: data.reply || "考官沉默了..." }) });
+      var replyText = typeof data === 'string' ? data : (data.reply || data.text || JSON.stringify(data));
+      setChatModal({ title: currentTitle, context: currentCtx, messages: newMsgs.concat({ role: "ai", text: replyText || "考官沉默了..." }) });
       setChatLoading(false);
     })
     .catch(function(err) {
-      setChatModal({ title: currentTitle, context: currentCtx, messages: newMsgs.concat({ role: "ai", text: "🚨 连接考官失败，请检查网络。" }) });
+      setChatModal({ title: currentTitle, context: currentCtx, messages: newMsgs.concat({ role: "ai", text: "🚨 呼叫考官失败，请检查网络！" }) });
       setChatLoading(false);
     });
   };
