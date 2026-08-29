@@ -619,7 +619,7 @@ function TermsPage() {
   var handleFileUpload = function(e) {
     var file = e.target.files[0]; if (!file) return;
     setFileUploading(true); var formData = new FormData(); formData.append("file", file);
-    fetch('http://localhost:3000/api/upload-terms', { method: 'POST', body: formData })
+    fetch('[https://catti-app.vercel.app](https://catti-app.vercel.app)', { method: 'POST', body: formData })
     .then(function(res) { return res.json(); })
     .then(function(data) {
       if (data.error) throw new Error(data.error);
@@ -1110,7 +1110,7 @@ function InterpExam(p) {
           var base64data = reader.result;
 
           // 2. 呼叫我们刚才在 server.cjs 里写好的新接口！
-          fetch('http://localhost:3000/api/transcribe', {
+          fetch('[https://catti-app.vercel.app](https://catti-app.vercel.app)', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ audioBase64: base64data, mimeType: blob.type })
