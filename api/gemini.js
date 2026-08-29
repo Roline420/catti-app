@@ -18,8 +18,8 @@ export default async function handler(req, res) {
       // 2️⃣ 从 Vercel 环境变量拿 Key
       const apiKey = process.env.GEMINI_API_KEY; 
   
-      // 使用 Gemini 2.0 Flash
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+      // 使用 Gemini 3.6 Flash
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
       const finalPrompt = `${prompt}\n\n【以下是考生的全部作答数据】：\n${userData}\n\n请严格按要求批改，并必须返回合法的纯 JSON 格式。`;
   
       const response = await fetch(url, {
