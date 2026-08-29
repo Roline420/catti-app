@@ -1623,7 +1623,7 @@ function PracticeRoom(p) {
         reader.readAsDataURL(blob);
         reader.onloadend = function() {
           var base64data = reader.result;
-          fetch('http://localhost:3000/api/transcribe', {
+          fetch('[https://catti-app.vercel.app/api/transcribe](https://catti-app.vercel.app/api/transcribe)', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ audioBase64: base64data, mimeType: blob.type })
           })
